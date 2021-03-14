@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>mysql 5.7虚拟列 generated columns</title>
+    <url>/LakenLi/2021/03/14/mysql-5-7%E8%99%9A%E6%8B%9F%E5%88%97-generated-columns/</url>
+    <content><![CDATA[<h3 id="CREATE-TABLE-支持生成的列"><a href="#CREATE-TABLE-支持生成的列" class="headerlink" title="CREATE TABLE 支持生成的列"></a>CREATE TABLE 支持生成的列</h3><p>生成列的值是根据列定义中包含的表达式计算的。<br>下面的简单示例的表，该表存储了 sidea 和 sideb 列中直角三角形的长度，并计算了sidec 中斜边的长度:<span id="more"></span></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> triangle(</span><br><span class="line">    sidea <span class="keyword">DOUBLE</span>,</span><br><span class="line">    sideb <span class="keyword">DOUBLE</span>,</span><br><span class="line">    sidec <span class="keyword">DOUBLE</span> <span class="keyword">AS</span> (<span class="built_in">SQRT</span>(sidea <span class="operator">*</span> sidea <span class="operator">+</span> sideb <span class="operator">*</span> sideb))</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> triangle (sidea, sideb) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">6</span>, <span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+<p>从表中选择会产生以下结果,使用 triangle 表的任何应用程序都可以访问斜边值，而无需指定计算它们的表达式。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> triangle;</span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br><span class="line"><span class="operator">|</span> sidea <span class="operator">|</span> sideb <span class="operator">|</span> sidec              <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">1</span> <span class="operator">|</span>     <span class="number">1</span> <span class="operator">|</span> <span class="number">1.4142135623730951</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">3</span> <span class="operator">|</span>     <span class="number">4</span> <span class="operator">|</span>                  <span class="number">5</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">6</span> <span class="operator">|</span>     <span class="number">8</span> <span class="operator">|</span>                 <span class="number">10</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br></pre></td></tr></table></figure>
+<p>生成的列的定义具有以下语法：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> `table_name` <span class="keyword">ADD</span> <span class="keyword">COLUMN</span> `col_name` datatype [GENRATED ALWAYS] <span class="keyword">AS</span> (expr) [VIRTUAL <span class="operator">|</span> STORED] [<span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>] [<span class="keyword">UNIQUE</span> [KEY]] [[<span class="keyword">PRIMARY</span>] KEY]</span><br><span class="line">[COMMENT <span class="string">&#x27;string&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>AS (expr)表示生成列并定义用于计算列值的表达式。AS 之前可能有 GENRATED ALWAYS,以使列的生成性质更加明确。</li>
+<li>VIRTUAL 或 STORED 关键字指示如何存储列值，如果未指定任何关键字，则默认值为 VIRTUAL.<ul>
+<li>VIRTUAL：不存储列值，但在任何 BEFORE 触发后立即读取行时计算列值。虚拟列不占用存储空间。InnoDB 支持虚拟列上的二级索引。</li>
+<li>STORED：插入或更新行时，将评估和存储列值。存储的列需要存储空间并且可以设置索引。</li>
+</ul>
+</li>
+</ul>
+<p>允许在表中混合 VIRTUAL 和 STORED 列。<br>生成的列表达式必须遵守以下规则。如果表达式不允许的构造，则会发生错误：</p>
+<ul>
+<li>允许使用文字，确定性内置函数和运算符。即要符合幂等。非确定函数的：CONNECTION_ID(), CURRENT_USER(), NOW()等。</li>
+<li>不允许存储函数和用户自定义函数。</li>
+<li>不允许存储过程和函数参数。</li>
+<li>不允许使用变量。（系统变量，用户自定义的变量和存储的程序局部变量）。</li>
+<li>不允许使用子查询。</li>
+<li>生成的列定义可以引用其他生成的列，但只能用表定义中较早出现的列。生成的列定义可以引用表中的任何基本（非生成）列，无论其定义是早期还是稍后</li>
+<li>AUTO_INCREMENT 属性不能在生成的列定义中使用。</li>
+<li>AUTO_INCREMENT 列不能用作生成的列定义中的基本列。</li>
+</ul>
+<p>存储的生成列上的外键约束不能使用 ON UPDATE CASCADE, ON DELETE SET NULL, ON UPDATE SET NULL, ON DELETE SET DEFAULT 或 ON UPDATE SET DEFAULT。<br>外键约束不能引用虚拟生成的列。<br>生成的列有几个用例，例如：</p>
+<ul>
+<li>虚拟生成列可用作简化和统一查询的方法。一个复杂的条件可以定义为生成的列，并从表上的多个查询引用，以确保它们都使用完全相同的条件</li>
+<li>存储生成列可用作物化缓存，用于复杂条件，这些条件在运行中计算成本很高。</li>
+<li>生成的列可以模拟功能索引：使用生成的列定义功能表达式并对其进行索引。这对处理无法直接索引的类型列非常有用</li>
+<li>对于存储的生成列，这种方法的缺点是值存储两次；一次作为生成列的值，一次作为索引</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mySQL</category>
+      </categories>
+  </entry>
+  <entry>
     <title>高性能MYSQL-读书笔记之索引(一)</title>
     <url>/LakenLi/2021/03/13/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%B8%80/</url>
     <content><![CDATA[<h3 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h3><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h5 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h5><p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构.<br>存储引擎以不同的方式使用B-Tree索引：</p>
@@ -91,46 +131,6 @@
 <ul>
 <li>创建了索引(A, B)，在创建索引(A)就是冗余索引，因为这只是前一个索引的前缀索引</li>
 <li>创建了索引(A, B)，在创建索引(B, A)，则不是冗余索引，索引(B)也不是</li>
-</ul>
-]]></content>
-      <categories>
-        <category>mySQL</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>mysql 5.7虚拟列 generated columns</title>
-    <url>/LakenLi/2021/03/14/mysql-5-7%E8%99%9A%E6%8B%9F%E5%88%97-generated-columns/</url>
-    <content><![CDATA[<h3 id="CREATE-TABLE-支持生成的列"><a href="#CREATE-TABLE-支持生成的列" class="headerlink" title="CREATE TABLE 支持生成的列"></a>CREATE TABLE 支持生成的列</h3><p>生成列的值是根据列定义中包含的表达式计算的。<br>下面的简单示例的表，该表存储了 sidea 和 sideb 列中直角三角形的长度，并计算了sidec 中斜边的长度:<span id="more"></span></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> triangle(</span><br><span class="line">    sidea <span class="keyword">DOUBLE</span>,</span><br><span class="line">    sideb <span class="keyword">DOUBLE</span>,</span><br><span class="line">    sidec <span class="keyword">DOUBLE</span> <span class="keyword">AS</span> (<span class="built_in">SQRT</span>(sidea <span class="operator">*</span> sidea <span class="operator">+</span> sideb <span class="operator">*</span> sideb))</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> triangle (sidea, sideb) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">6</span>, <span class="number">8</span>);</span><br></pre></td></tr></table></figure>
-<p>从表中选择会产生以下结果,使用 triangle 表的任何应用程序都可以访问斜边值，而无需指定计算它们的表达式。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> triangle;</span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br><span class="line"><span class="operator">|</span> sidea <span class="operator">|</span> sideb <span class="operator">|</span> sidec              <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">1</span> <span class="operator">|</span>     <span class="number">1</span> <span class="operator">|</span> <span class="number">1.4142135623730951</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">3</span> <span class="operator">|</span>     <span class="number">4</span> <span class="operator">|</span>                  <span class="number">5</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>     <span class="number">6</span> <span class="operator">|</span>     <span class="number">8</span> <span class="operator">|</span>                 <span class="number">10</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-------+-------+--------------------+</span></span><br></pre></td></tr></table></figure>
-<p>生成的列的定义具有以下语法：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> `table_name` <span class="keyword">ADD</span> <span class="keyword">COLUMN</span> `col_name` datatype [GENRATED ALWAYS] <span class="keyword">AS</span> (expr) [VIRTUAL <span class="operator">|</span> STORED] [<span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span>] [<span class="keyword">UNIQUE</span> [KEY]] [[<span class="keyword">PRIMARY</span>] KEY]</span><br><span class="line">[COMMENT <span class="string">&#x27;string&#x27;</span>]</span><br></pre></td></tr></table></figure>
-<ul>
-<li>AS (expr)表示生成列并定义用于计算列值的表达式。AS 之前可能有 GENRATED ALWAYS,以使列的生成性质更加明确。</li>
-<li>VIRTUAL 或 STORED 关键字指示如何存储列值，如果未指定任何关键字，则默认值为 VIRTUAL.<ul>
-<li>VIRTUAL：不存储列值，但在任何 BEFORE 触发后立即读取行时计算列值。虚拟列不占用存储空间。InnoDB 支持虚拟列上的二级索引。</li>
-<li>STORED：插入或更新行时，将评估和存储列值。存储的列需要存储空间并且可以设置索引。</li>
-</ul>
-</li>
-</ul>
-<p>允许在表中混合 VIRTUAL 和 STORED 列。<br>生成的列表达式必须遵守以下规则。如果表达式不允许的构造，则会发生错误：</p>
-<ul>
-<li>允许使用文字，确定性内置函数和运算符。即要符合幂等。非确定函数的：CONNECTION_ID(), CURRENT_USER(), NOW()等。</li>
-<li>不允许存储函数和用户自定义函数。</li>
-<li>不允许存储过程和函数参数。</li>
-<li>不允许使用变量。（系统变量，用户自定义的变量和存储的程序局部变量）。</li>
-<li>不允许使用子查询。</li>
-<li>生成的列定义可以引用其他生成的列，但只能用表定义中较早出现的列。生成的列定义可以引用表中的任何基本（非生成）列，无论其定义是早期还是稍后</li>
-<li>AUTO_INCREMENT 属性不能在生成的列定义中使用。</li>
-<li>AUTO_INCREMENT 列不能用作生成的列定义中的基本列。</li>
-</ul>
-<p>存储的生成列上的外键约束不能使用 ON UPDATE CASCADE, ON DELETE SET NULL, ON UPDATE SET NULL, ON DELETE SET DEFAULT 或 ON UPDATE SET DEFAULT。<br>外键约束不能引用虚拟生成的列。<br>生成的列有几个用例，例如：</p>
-<ul>
-<li>虚拟生成列可用作简化和统一查询的方法。一个复杂的条件可以定义为生成的列，并从表上的多个查询引用，以确保它们都使用完全相同的条件</li>
-<li>存储生成列可用作物化缓存，用于复杂条件，这些条件在运行中计算成本很高。</li>
-<li>生成的列可以模拟功能索引：使用生成的列定义功能表达式并对其进行索引。这对处理无法直接索引的类型列非常有用</li>
-<li>对于存储的生成列，这种方法的缺点是值存储两次；一次作为生成列的值，一次作为索引</li>
 </ul>
 ]]></content>
       <categories>
