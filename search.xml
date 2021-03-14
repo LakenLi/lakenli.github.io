@@ -41,6 +41,50 @@
       </categories>
   </entry>
   <entry>
+    <title>高性能MYSQL-读书笔记之索引(一)</title>
+    <url>/2021/03/13/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%B8%80/</url>
+    <content><![CDATA[<h3 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h3><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h5 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h5><p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构.<br>存储引擎以不同的方式使用B-Tree索引：</p>
+<ul>
+<li>MyISAM使用前缀压缩技术使得索引更小；MyISAM索引通过数据的无力位置引用被索引的行</li>
+<li>InnoDB则按照原数据格式进行存储；InnoDB根据主键引用被索引的行</li>
+</ul>
+<p>可使用B-Tree索引的查询类型。B-Tree索引适用于全键值、键值范围或键前缀查找：</p>
+<span id="more"></span>
+<ul>
+<li>全值匹配：和索引种的所有列进行匹配</li>
+<li>匹配最左前缀：使用索引的第一列</li>
+<li>匹配列前缀：匹配某一列的值的开头部分</li>
+<li>匹配范围值：</li>
+<li>精确匹配某一列并范围匹配另外一列</li>
+<li>只访问索引的查询</li>
+</ul>
+<p>因为索引树中的结点是有序的，所以索引除了查找之外，还可以用于查询种的 ORDER BY 操作。只要 ORDER BY 子句满足以上的查询类型，则这个索引也可以满足排序需求</p>
+<p>关于B-Tree索引的限制：</p>
+<ul>
+<li>如果不是按照索引的最左列开始查找，则无法使用索引</li>
+<li>不能跳过索引中的列</li>
+<li>如果查询中有某个列的范围查询，则其右边所有列都无法使用索引优化查找</li>
+</ul>
+<h4 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h4><p>哈希索引(hash index)基于哈希表实现，只有精确匹配索引所有列的查询才有效。<br>哈希索引的缺点：</p>
+<ul>
+<li>哈希索引只包含哈希值和行指针，不存储字段值，导致不能使用索引中的值来避免读取行</li>
+<li>哈希索引数据并不是按照索引值顺序存储的，无法用于排序</li>
+<li>哈希表不支持部分索引列匹配查找，因为哈希索引始终使用索引列的全部内容来计算哈希值的。例如，在数据列（A，B）上建立哈希索引，如果只查询A列，则无法使用索引</li>
+<li>哈希只支持等值比较查询，包括=、IN()、&gt;、&lt;,不支持任何范围查询</li>
+<li>如果哈希冲突很多，索引维护的代价会很高</li>
+</ul>
+<h4 id="空间数据索引"><a href="#空间数据索引" class="headerlink" title="空间数据索引"></a>空间数据索引</h4><h5 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h5><p>索引的优点<br>总结三个优点：</p>
+<ul>
+<li>1、索引大大减少了服务器需要扫描的数据量</li>
+<li>2、索引可以帮助服务器避免排序和临时表</li>
+<li>3、索引可以将随机I/O变为顺序I/O</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mySQL</category>
+      </categories>
+  </entry>
+  <entry>
     <title>高性能MYSQL-读书笔记之索引(二)</title>
     <url>/2021/03/14/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%BA%8C/</url>
     <content><![CDATA[<h3 id="高性能索引策略"><a href="#高性能索引策略" class="headerlink" title="高性能索引策略"></a>高性能索引策略</h3><p>正确的创建和使用索引是实现高性能查询的基础。</p>
@@ -87,50 +131,6 @@
 <ul>
 <li>创建了索引(A, B)，在创建索引(A)就是冗余索引，因为这只是前一个索引的前缀索引</li>
 <li>创建了索引(A, B)，在创建索引(B, A)，则不是冗余索引，索引(B)也不是</li>
-</ul>
-]]></content>
-      <categories>
-        <category>mySQL</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>高性能MYSQL-读书笔记之索引(一)</title>
-    <url>/2021/03/13/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%B8%80/</url>
-    <content><![CDATA[<h3 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h3><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h5 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h5><p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构.<br>存储引擎以不同的方式使用B-Tree索引：</p>
-<ul>
-<li>MyISAM使用前缀压缩技术使得索引更小；MyISAM索引通过数据的无力位置引用被索引的行</li>
-<li>InnoDB则按照原数据格式进行存储；InnoDB根据主键引用被索引的行</li>
-</ul>
-<p>可使用B-Tree索引的查询类型。B-Tree索引适用于全键值、键值范围或键前缀查找：</p>
-<span id="more"></span>
-<ul>
-<li>全值匹配：和索引种的所有列进行匹配</li>
-<li>匹配最左前缀：使用索引的第一列</li>
-<li>匹配列前缀：匹配某一列的值的开头部分</li>
-<li>匹配范围值：</li>
-<li>精确匹配某一列并范围匹配另外一列</li>
-<li>只访问索引的查询</li>
-</ul>
-<p>因为索引树中的结点是有序的，所以索引除了查找之外，还可以用于查询种的 ORDER BY 操作。只要 ORDER BY 子句满足以上的查询类型，则这个索引也可以满足排序需求</p>
-<p>关于B-Tree索引的限制：</p>
-<ul>
-<li>如果不是按照索引的最左列开始查找，则无法使用索引</li>
-<li>不能跳过索引中的列</li>
-<li>如果查询中有某个列的范围查询，则其右边所有列都无法使用索引优化查找</li>
-</ul>
-<h4 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h4><p>哈希索引(hash index)基于哈希表实现，只有精确匹配索引所有列的查询才有效。<br>哈希索引的缺点：</p>
-<ul>
-<li>哈希索引只包含哈希值和行指针，不存储字段值，导致不能使用索引中的值来避免读取行</li>
-<li>哈希索引数据并不是按照索引值顺序存储的，无法用于排序</li>
-<li>哈希表不支持部分索引列匹配查找，因为哈希索引始终使用索引列的全部内容来计算哈希值的。例如，在数据列（A，B）上建立哈希索引，如果只查询A列，则无法使用索引</li>
-<li>哈希只支持等值比较查询，包括=、IN()、&gt;、&lt;,不支持任何范围查询</li>
-<li>如果哈希冲突很多，索引维护的代价会很高</li>
-</ul>
-<h4 id="空间数据索引"><a href="#空间数据索引" class="headerlink" title="空间数据索引"></a>空间数据索引</h4><h5 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h5><p>索引的优点<br>总结三个优点：</p>
-<ul>
-<li>1、索引大大减少了服务器需要扫描的数据量</li>
-<li>2、索引可以帮助服务器避免排序和临时表</li>
-<li>3、索引可以将随机I/O变为顺序I/O</li>
 </ul>
 ]]></content>
       <categories>
