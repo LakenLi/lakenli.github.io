@@ -41,6 +41,50 @@
       </categories>
   </entry>
   <entry>
+    <title>高性能MYSQL-读书笔记之索引(一)</title>
+    <url>/2021/03/13/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%B8%80/</url>
+    <content><![CDATA[<h3 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h3><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h5 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h5><p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构.<br>存储引擎以不同的方式使用B-Tree索引：</p>
+<ul>
+<li>MyISAM使用前缀压缩技术使得索引更小；MyISAM索引通过数据的无力位置引用被索引的行</li>
+<li>InnoDB则按照原数据格式进行存储；InnoDB根据主键引用被索引的行</li>
+</ul>
+<p>可使用B-Tree索引的查询类型。B-Tree索引适用于全键值、键值范围或键前缀查找：</p>
+<span id="more"></span>
+<ul>
+<li>全值匹配：和索引种的所有列进行匹配</li>
+<li>匹配最左前缀：使用索引的第一列</li>
+<li>匹配列前缀：匹配某一列的值的开头部分</li>
+<li>匹配范围值：</li>
+<li>精确匹配某一列并范围匹配另外一列</li>
+<li>只访问索引的查询</li>
+</ul>
+<p>因为索引树中的结点是有序的，所以索引除了查找之外，还可以用于查询种的 ORDER BY 操作。只要 ORDER BY 子句满足以上的查询类型，则这个索引也可以满足排序需求</p>
+<p>关于B-Tree索引的限制：</p>
+<ul>
+<li>如果不是按照索引的最左列开始查找，则无法使用索引</li>
+<li>不能跳过索引中的列</li>
+<li>如果查询中有某个列的范围查询，则其右边所有列都无法使用索引优化查找</li>
+</ul>
+<h4 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h4><p>哈希索引(hash index)基于哈希表实现，只有精确匹配索引所有列的查询才有效。<br>哈希索引的缺点：</p>
+<ul>
+<li>哈希索引只包含哈希值和行指针，不存储字段值，导致不能使用索引中的值来避免读取行</li>
+<li>哈希索引数据并不是按照索引值顺序存储的，无法用于排序</li>
+<li>哈希表不支持部分索引列匹配查找，因为哈希索引始终使用索引列的全部内容来计算哈希值的。例如，在数据列（A，B）上建立哈希索引，如果只查询A列，则无法使用索引</li>
+<li>哈希只支持等值比较查询，包括=、IN()、&gt;、&lt;,不支持任何范围查询</li>
+<li>如果哈希冲突很多，索引维护的代价会很高</li>
+</ul>
+<h4 id="空间数据索引"><a href="#空间数据索引" class="headerlink" title="空间数据索引"></a>空间数据索引</h4><h5 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h5><p>索引的优点<br>总结三个优点：</p>
+<ul>
+<li>1、索引大大减少了服务器需要扫描的数据量</li>
+<li>2、索引可以帮助服务器避免排序和临时表</li>
+<li>3、索引可以将随机I/O变为顺序I/O</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mySQL</category>
+      </categories>
+  </entry>
+  <entry>
     <title>高性能MYSQL-读书笔记之索引(二)</title>
     <url>/2021/03/14/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%BA%8C/</url>
     <content><![CDATA[<h3 id="高性能索引策略"><a href="#高性能索引策略" class="headerlink" title="高性能索引策略"></a>高性能索引策略</h3><p>正确的创建和使用索引是实现高性能查询的基础。</p>
@@ -94,47 +138,35 @@
       </categories>
   </entry>
   <entry>
-    <title>高性能MYSQL-读书笔记之索引(一)</title>
-    <url>/2021/03/13/%E9%AB%98%E6%80%A7%E8%83%BDMYSQL-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%B4%A2%E5%BC%95-%E4%B8%80/</url>
-    <content><![CDATA[<h3 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h3><h4 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h4><h5 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h5><p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构.<br>存储引擎以不同的方式使用B-Tree索引：</p>
-<ul>
-<li>MyISAM使用前缀压缩技术使得索引更小；MyISAM索引通过数据的无力位置引用被索引的行</li>
-<li>InnoDB则按照原数据格式进行存储；InnoDB根据主键引用被索引的行</li>
-</ul>
-<p>可使用B-Tree索引的查询类型。B-Tree索引适用于全键值、键值范围或键前缀查找：</p>
+    <title>GO语言基础-day01</title>
+    <url>/2021/03/22/GO%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80-day01/</url>
+    <content><![CDATA[<h3 id="1、GO的执行原理"><a href="#1、GO的执行原理" class="headerlink" title="1、GO的执行原理"></a>1、GO的执行原理</h3><p><img src="http://free-cn-01.oss.tusy.xyz/asf/jfs/t1/157815/21/15246/134300/6058acb5E3838c238/2a16ca8950783f07.png" alt="GO的源码文件分类"><br>如上图分为三类：</p>
 <span id="more"></span>
 <ul>
-<li>全值匹配：和索引种的所有列进行匹配</li>
-<li>匹配最左前缀：使用索引的第一列</li>
-<li>匹配列前缀：匹配某一列的值的开头部分</li>
-<li>匹配范围值：</li>
-<li>精确匹配某一列并范围匹配另外一列</li>
-<li>只访问索引的查询</li>
+<li>1、命令源码文件<ul>
+<li>1、声明自己属于 main 代码包、包含无参数声明和结果声明的 main 函数。</li>
+<li>2、命令源码文件被安装以后，GOPATH 如果只有一个工作区，那么相应的可执行文件会被存放当前工作区的 bin 文件夹下；如果有多个工作区，就会安装到 GOBIN 指向的目录下。</li>
+<li>3、命令源码文件是 Go 程序的入口。</li>
+<li>4、同一个代码包中最好也不要放多个命令源码文件。多个命令源码文件虽然可以分开单独 go run 运行起来，但是无法通过 go build 和 go install。</li>
 </ul>
-<p>因为索引树中的结点是有序的，所以索引除了查找之外，还可以用于查询种的 ORDER BY 操作。只要 ORDER BY 子句满足以上的查询类型，则这个索引也可以满足排序需求</p>
-<p>关于B-Tree索引的限制：</p>
-<ul>
-<li>如果不是按照索引的最左列开始查找，则无法使用索引</li>
-<li>不能跳过索引中的列</li>
-<li>如果查询中有某个列的范围查询，则其右边所有列都无法使用索引优化查找</li>
+</li>
+<li>2、库源码文件<ul>
+<li>1、库源码文件就是不具备命令源码文件上述两个特征的源码文件。存在于某个代码包中的普通的源码文件。</li>
+<li>2、库源码文件被安装后，相应的归档文件（.a 文件）会被存放到当前工作区的 pkg 的平台相关目录下。</li>
 </ul>
-<h4 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h4><p>哈希索引(hash index)基于哈希表实现，只有精确匹配索引所有列的查询才有效。<br>哈希索引的缺点：</p>
-<ul>
-<li>哈希索引只包含哈希值和行指针，不存储字段值，导致不能使用索引中的值来避免读取行</li>
-<li>哈希索引数据并不是按照索引值顺序存储的，无法用于排序</li>
-<li>哈希表不支持部分索引列匹配查找，因为哈希索引始终使用索引列的全部内容来计算哈希值的。例如，在数据列（A，B）上建立哈希索引，如果只查询A列，则无法使用索引</li>
-<li>哈希只支持等值比较查询，包括=、IN()、&gt;、&lt;,不支持任何范围查询</li>
-<li>如果哈希冲突很多，索引维护的代价会很高</li>
+</li>
+<li>3、测试源码文件<ul>
+<li>1、名称以 _test.go 为后缀的代码文件，并且必须包含 Test 或者 Benchmark 名称前缀的函数：</li>
+<li>2、<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 名称以 Test 为名称前缀的函数，只能接受 *testing.T 的参数，这种测试函数是功能测试函数。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestXXX</span><span class="params">( t *testing.T)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 名称以 Benchmark 为名称前缀的函数，只能接受 *testing.B 的参数，这种测试函数是性能测试函数。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">BenchmarkXXX</span><span class="params">( b *testing.B)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="空间数据索引"><a href="#空间数据索引" class="headerlink" title="空间数据索引"></a>空间数据索引</h4><h5 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h5><p>索引的优点<br>总结三个优点：</p>
-<ul>
-<li>1、索引大大减少了服务器需要扫描的数据量</li>
-<li>2、索引可以帮助服务器避免排序和临时表</li>
-<li>3、索引可以将随机I/O变为顺序I/O</li>
+</li>
 </ul>
 ]]></content>
       <categories>
-        <category>mySQL</category>
+        <category>GO语言基础</category>
       </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
   </entry>
 </search>
