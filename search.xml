@@ -184,4 +184,43 @@
         <tag>GO</tag>
       </tags>
   </entry>
+  <entry>
+    <title>GO基础语法-day02</title>
+    <url>/2021/03/25/GO%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95-day02/</url>
+    <content><![CDATA[<h3 id="1、变量的使用"><a href="#1、变量的使用" class="headerlink" title="1、变量的使用"></a>1、变量的使用</h3><h4 id="1-1、声明变量"><a href="#1-1、声明变量" class="headerlink" title="1.1、声明变量"></a>1.1、声明变量</h4><p>以字母或下划线开头，由一个或多个字母、数字、下划线组成</p>
+<h5 id="1-1-1、声明一个变量"><a href="#1-1-1、声明一个变量" class="headerlink" title="1.1.1、声明一个变量"></a>1.1.1、声明一个变量</h5><p>第一种，指定变量类型，声明后若不赋值，使用默认值</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name <span class="keyword">type</span></span><br><span class="line">name = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>第二种，根据值自行判定变量类型(类型推断Type inference)</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>第三种，省略var, 注意 :=左侧的变量不应该是已经声明过的(多个变量同时声明时，至少保证一个是新变量)，否则会导致编译错误(简短声明)</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">name := <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 例如</span></span><br><span class="line"><span class="keyword">var</span> a <span class="keyword">int</span> = <span class="number">10</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="number">10</span></span><br><span class="line">c : = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="1-1-2、多变量声明"><a href="#1-1-2、多变量声明" class="headerlink" title="1.1.2、多变量声明"></a>1.1.2、多变量声明</h5><p>第一种，以逗号分隔，声明与赋值分开，若不赋值，存在默认值</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name1, name2, name3 <span class="keyword">type</span></span><br><span class="line">name1, name2, name3 = v1, v2, v3</span><br></pre></td></tr></table></figure>
+
+<p>第二种，直接赋值，下面的变量类型可以是不同的类型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name1, name2, name3 = v1, v2, v3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第三种，集合类型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    name1 type1</span><br><span class="line">    name2 type2</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、注意事项"><a href="#1-2、注意事项" class="headerlink" title="1.2、注意事项"></a>1.2、注意事项</h4><ul>
+<li>1、变量必须先定义才能使用</li>
+<li>2、go语言是静态语言，要求变量的类型和赋值的类型必须一致。</li>
+<li>3、变量名不能冲突。(同一个作用于域内不能冲突)</li>
+<li>4、简短定义方式，左边的变量名至少有一个是新的</li>
+<li>5、简短定义方式，不能定义全局变量。</li>
+<li>6、变量的零值。也叫默认值。</li>
+<li>7、变量定义了就要使用，否则无法通过编译。</li>
+</ul>
+<h3 id="2、常量的使用"><a href="#2、常量的使用" class="headerlink" title="2、常量的使用"></a>2、常量的使用</h3>]]></content>
+      <categories>
+        <category>GO语言基础</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
+  </entry>
 </search>
