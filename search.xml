@@ -161,7 +161,22 @@
 </ul>
 </li>
 </ul>
-]]></content>
+<h3 id="2、GO的命令"><a href="#2、GO的命令" class="headerlink" title="2、GO的命令"></a>2、GO的命令</h3><p>截至V1.12里面基本命令有以下17个。<br>我们可以打开终端输入：go help即可看到Go的这些命令以及简介。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">bug         start a bug report</span><br><span class="line">build       compile packages and dependencies</span><br><span class="line">clean       remove object files and cached files</span><br><span class="line">doc         show documentation for package or symbol</span><br><span class="line">env         print Go environment information</span><br><span class="line">fix         update packages to use new APIs</span><br><span class="line">fmt         gofmt (reformat) package sources</span><br><span class="line">generate    generate Go files by processing source</span><br><span class="line">get         download and install packages and dependencies</span><br><span class="line">install     compile and install packages and dependencies</span><br><span class="line">list        list packages or modules</span><br><span class="line">mod         module maintenance</span><br><span class="line">run         compile and run Go program</span><br><span class="line">test        test packages</span><br><span class="line">tool        run specified go tool</span><br><span class="line">version     print Go version</span><br><span class="line">vet         report likely mistakes in packages</span><br></pre></td></tr></table></figure>
+<p>其中和编译相关的有build、get、install、run这4个。接下来就依次看看这四个的作用。<br>在详细分析这4个命令之前，先罗列一下通用的命令标记，以下这些命令都可适用的：<br>|   名称   |   说明   |<br>| —- | —- |<br>|  -a  |   用于强制重新编译所有涉及的 Go 语言代码包（包括 Go 语言标准库中的代码包），即使它们已经是最新的了。该标记可以让我们有机会通过改动底层的代码包做一些实验。   |<br>|  -n  |  使命令仅打印其执行过程中用到的所有命令，而不去真正执行它们。如果不只想查看或者验证命令的执行过程，而不想改变任何东西，使用它正好合适。    |<br>| -race  |  用于检测并报告指定 Go 语言程序中存在的数据竞争问题。当用 Go 语言编写并发程序的时候，这是很重要的检测手段之一。    |<br>| -v   |   用于打印命令执行过程中涉及的代码包。这一定包括我们指定的目标代码包，并且有时还会包括该代码包直接或间接依赖的那些代码包。这会让你知道哪些代码包被执行过了。   |<br>| -work   |   用于打印命令执行时生成和使用的临时工作目录的名字，且命令执行完成后不删除它。这个目录下的文件可能会对你有用，也可以从侧面了解命令的执行过程。如果不添加此标记，那么临时工作目录会在命令执行完毕前删除。   |<br>|  -x    |   使命令打印其执行过程中用到的所有命令，并同时执行它们。   |</p>
+<h5 id="2-1、go-run"><a href="#2-1、go-run" class="headerlink" title="2.1、go run"></a>2.1、go run</h5><p>专门用来运行命令源码文件的命令，注意，这个命令不是用来运行所有 Go 的源码文件的！<br>go run 命令只能接受一个命令源码文件以及若干个库源码文件（必须同属于 main 包）作为文件参数，且不能接受测试源码文件。它在执行时会检查源码文件的类型。如果参数中有多个或者没有命令源码文件，那么 go run 命令就只会打印错误提示信息并退出，而不会继续执行。<br><img src="http://free-cn-01.cdn.bilnn.com/ddfilesass/jfs/t1/156225/37/17963/50322/605bd9f9E4a81f0e3/e25206db86f5ac21.jpg" alt="go run执行过程"><br>go run 命令在第二次执行的时候，如果发现导入的代码包没有发生变化，那么 go run 不会再次编译这个导入的代码包。直接静态链接进来。</p>
+<h5 id="2-2、go-build"><a href="#2-2、go-build" class="headerlink" title="2.2、go build"></a>2.2、go build</h5><p>go build 命令主要是用于测试编译。在包的编译过程中，若有必要，会同时编译与之相关联的包。</p>
+<ul>
+<li>1、如果是普通包，当你执行go build命令后，不会产生任何文件。</li>
+<li>2、如果是main包，当只执行go build命令后，会在当前目录下生成一个可执行文件。如果需要在$GOPATH/bin目录下生成相应的exe文件，需要执行go install 或者使用 go build -o 路径/可执行文件。</li>
+<li>3、如果某个文件夹下有多个文件，而你只想编译其中某一个文件，可以在 go build 之后加上文件名，例如 go build a.go；go build 命令默认会编译当前目录下的所有go文件。</li>
+<li>4、你也可以指定编译输出的文件名。比如，我们可以指定go build -o 可执行文件名，默认情况是你的package名(非main包)，或者是第一个源文件的文件名(main包)。</li>
+<li>5、go build 会忽略目录下以”_”或者”.”开头的go文件。</li>
+<li>6、如果你的源代码针对不同的操作系统需要不同的处理，那么你可以根据不同的操作系统后缀来命名文件。</li>
+</ul>
+<p>当代码包中有且仅有一个命令源码文件的时候，在文件夹所在目录中执行 go build 命令，会在该目录下生成一个与目录同名的可执行文件。</p>
+<p><img src="http://free-cn-01.cdn.bilnn.com/ddfilesass/jfs/t1/174535/2/269/132299/605bdb5bE4356d523/c1365aefd78680ba.png" alt="执行区别"></p>
+<h5 id="2-3、go-install"><a href="#2-3、go-install" class="headerlink" title="2.3、go install"></a>2.3、go install</h5><h5 id="2-4、go-get"><a href="#2-4、go-get" class="headerlink" title="2.4、go get"></a>2.4、go get</h5>]]></content>
       <categories>
         <category>GO语言基础</category>
       </categories>
