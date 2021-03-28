@@ -178,7 +178,7 @@
 <p><img src="http://free-cn-01.cdn.bilnn.com/ddfilesass/jfs/t1/174535/2/269/132299/605bdb5bE4356d523/c1365aefd78680ba.png" alt="执行区别"></p>
 <h5 id="2-3、go-install"><a href="#2-3、go-install" class="headerlink" title="2.3、go install"></a>2.3、go install</h5><h5 id="2-4、go-get"><a href="#2-4、go-get" class="headerlink" title="2.4、go get"></a>2.4、go get</h5>]]></content>
       <categories>
-        <category>GO语言基础</category>
+        <category>GO基础</category>
       </categories>
       <tags>
         <tag>GO</tag>
@@ -233,7 +233,147 @@
 <p>如果中断iota自增，则必须显式恢复。且后续自增值按行序递增，自增默认是int类型，可以自行进行显示指定类型。数字常量不会分配存储空间，无须像变量那样通过内存寻址来取值，因此无法获取地址</p>
 ]]></content>
       <categories>
-        <category>GO语言基础</category>
+        <category>GO基础</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GO运算符-day03</title>
+    <url>/2021/03/28/GO%E8%BF%90%E7%AE%97%E7%AC%A6-day03/</url>
+    <content><![CDATA[<h3 id="1、运算符"><a href="#1、运算符" class="headerlink" title="1、运算符"></a>1、运算符</h3><h4 id="1-1、算术运算符"><a href="#1-1、算术运算符" class="headerlink" title="1.1、算术运算符"></a>1.1、算术运算符</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">+ - * / %(求余) ++ --</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、关系运算符"><a href="#1-2、关系运算符" class="headerlink" title="1.2、关系运算符"></a>1.2、关系运算符</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">== != &gt; &lt; &gt;= &lt;=</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3、逻辑运算符"><a href="#1-3、逻辑运算符" class="headerlink" title="1.3、逻辑运算符"></a>1.3、逻辑运算符</h4><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&amp;&amp;</td>
+<td>逻辑与运算符。如果两个操作数都非零，则条件变为真</td>
+</tr>
+<tr>
+<td>||</td>
+<td>逻辑或操作。如果任何两个操作数是非零，则条件变为真</td>
+</tr>
+<tr>
+<td>!</td>
+<td>逻辑非运算符。使用反转操作数的逻辑状态。如果条件为真，那么逻辑非操后结果为假</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+<h4 id="1-4、位运算符"><a href="#1-4、位运算符" class="headerlink" title="1.4、位运算符"></a>1.4、位运算符</h4><table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>A&amp;B</th>
+<th>A|B</th>
+<th>A^B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>举个例子，假设A = 60， B = 13<br>|   运算符   |   描述   |  示例    |<br>| —- | —- | —- |<br>|  &amp;    |  二进制与操作    | (A &amp; B) = 12, 也就是 0000 1100     |<br>|  |    |  二进制或操作    | (A | B) = 61, 也就是 0011 1101     |<br>|  ^    |  二进制异或操作，如果它被设置在一个操作数就是按位取非    |  (A ^ B) = 49, 也就是 0011 0001    |<br>|  &amp;^    | 二进制位清空     |   (A&amp;^B)=48，也就是110000   |<br>|  &lt;&lt;    |  二进制左移位    |   A &lt;&lt; 2 =240 也就是 1111 0000   |<br>|  &gt;&gt;    |  二进制右移位    |   A &gt;&gt; 2 = 15 也就是 0000 1111   |</p>
+<h4 id="1-4、赋值运算符"><a href="#1-4、赋值运算符" class="headerlink" title="1.4、赋值运算符"></a>1.4、赋值运算符</h4><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>=</td>
+<td>简单的赋值操作符，分配值从右边的操作数左侧的操作数</td>
+<td>C = A + B 将分配A + B的值到C</td>
+</tr>
+<tr>
+<td>+=</td>
+<td>相加并赋值运算符，它增加了右操作数左操作数和分配结果左操作数</td>
+<td>C += A 相当于 C = C + A</td>
+</tr>
+<tr>
+<td>-=</td>
+<td>减和赋值运算符，它减去右操作数从左侧的操作数和分配结果左操作数</td>
+<td>C -= A 相当于 C = C - A</td>
+</tr>
+<tr>
+<td>*=</td>
+<td>乘法和赋值运算符，它乘以右边的操作数与左操作数和分配结果左操作数</td>
+<td>C *= A 相当于 C = C * A</td>
+</tr>
+<tr>
+<td>/=</td>
+<td>除法赋值运算符，它把左操作数与右操作数和分配结果左操作数</td>
+<td>C /= A 相当于 C = C / A</td>
+</tr>
+<tr>
+<td>%=</td>
+<td>模量和赋值运算符，它需要使用两个操作数的模量和分配结果左操作数</td>
+<td>C %= A 相当于 C = C % A</td>
+</tr>
+<tr>
+<td>&lt;&lt;=</td>
+<td>左移位并赋值运算符</td>
+<td>C &lt;&lt;= 2 相同于 C = C &lt;&lt; 2</td>
+</tr>
+<tr>
+<td>&gt;&gt;=</td>
+<td>向右移位并赋值运算符</td>
+<td>C &gt;&gt;= 2 相同于 C = C &gt;&gt; 2</td>
+</tr>
+<tr>
+<td>&amp;=</td>
+<td>按位与赋值运算符</td>
+<td>C &amp;= 2 相同于 C = C &amp; 2</td>
+</tr>
+<tr>
+<td>^=</td>
+<td>按位异或并赋值运算符</td>
+<td>C ^= 2 相同于 C = C ^ 2</td>
+</tr>
+<tr>
+<td>|=</td>
+<td>按位或并赋值运算符</td>
+<td>C |= 2 相同于 C = C | 2</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>GO基础</category>
       </categories>
       <tags>
         <tag>GO</tag>
