@@ -409,4 +409,24 @@
         <tag>GO</tag>
       </tags>
   </entry>
+  <entry>
+    <title>GO切片-day05</title>
+    <url>/2021/03/29/GO%E5%88%87%E7%89%87-day05/</url>
+    <content><![CDATA[<h3 id="1、什么是切片"><a href="#1、什么是切片" class="headerlink" title="1、什么是切片"></a>1、什么是切片</h3><p>切片是一种数据结构。是一个很小的对象，对底层数组进行了抽象，并提供相关的操作方法。<br>从概念上面来说slice像一个结构体，这个结构体包含了三个字段：</p>
+<ul>
+<li>1、指向底层数组的指针，指向数组中slice指定的开始位置</li>
+<li>2、长度，即slice的长度，切片访问的元素的个数</li>
+<li>3、最大长度，也就是slice开始位置到数组的最后位置的长度，即容量<span id="more"></span></li>
+</ul>
+<h3 id="2、创建和初始化"><a href="#2、创建和初始化" class="headerlink" title="2、创建和初始化"></a>2、创建和初始化</h3><h4 id="2-1、make和切片字面量"><a href="#2-1、make和切片字面量" class="headerlink" title="2.1、make和切片字面量"></a>2.1、make和切片字面量</h4><p>使用内置的make函数创建切片，示例</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// c创建一个字符串切片，长度和容量都是5</span></span><br><span class="line">slice := <span class="built_in">make</span>([]<span class="keyword">string</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果只指定长度，那切片的容量和长度相等。也可以分别指定长度和容量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个整型切片，长度为3，容量为5</span></span><br><span class="line">slice := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过字面量来声明切片</span></span><br><span class="line"><span class="comment">// 创建字符串切片</span></span><br><span class="line">slice := []<span class="keyword">string</span>&#123;<span class="string">&quot;red&quot;</span>, <span class="string">&quot;Blue&quot;</span>, <span class="string">&quot;Green&quot;</span>, <span class="string">&quot;Yellow&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">slice := []<span class="keyword">int</span>&#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2、nil和空切片"><a href="#2-2、nil和空切片" class="headerlink" title="2.2、nil和空切片"></a>2.2、nil和空切片</h4>]]></content>
+      <categories>
+        <category>GO基础</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
+  </entry>
 </search>
