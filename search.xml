@@ -511,4 +511,25 @@
         <tag>GO</tag>
       </tags>
   </entry>
+  <entry>
+    <title>微服务入门-day01</title>
+    <url>/2021/04/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8-day01/</url>
+    <content><![CDATA[<h3 id="1、微服务"><a href="#1、微服务" class="headerlink" title="1、微服务"></a>1、微服务</h3><ul>
+<li>1、<strong>服务拆分粒度更细</strong>。</li>
+<li>2、<strong>服务独立部署</strong>。</li>
+<li>3、<strong>服务独立维护</strong>。</li>
+<li>4、<strong>服务治理能力要求高</strong></li>
+</ul>
+<h3 id="2、单体应用拆分成微服务的正确姿势"><a href="#2、单体应用拆分成微服务的正确姿势" class="headerlink" title="2、单体应用拆分成微服务的正确姿势"></a>2、单体应用拆分成微服务的正确姿势</h3><p>根据实际项目经验，一旦单体应用同时进行开发的人员超过 10 人，就会遇到上面的问题，这个时候就该考虑进行服务化拆分了。</p>
+<h4 id="2-1、服务拆分的姿势"><a href="#2-1、服务拆分的姿势" class="headerlink" title="2.1、服务拆分的姿势"></a>2.1、服务拆分的姿势</h4><ul>
+<li>1、<strong>纵向拆分</strong>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>极客时间《从0开始学微服务》</tag>
+      </tags>
+  </entry>
 </search>
