@@ -436,7 +436,16 @@
   <entry>
     <title>GO指针-day08</title>
     <url>/2021/04/03/GO%E6%8C%87%E9%92%88-day08/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h3 id="1、指针的声明"><a href="#1、指针的声明" class="headerlink" title="1、指针的声明"></a>1、指针的声明</h3><p>声明指针， *T是指针变量的类型</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> var_name *<span class="keyword">var</span>-<span class="keyword">type</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ip *<span class="keyword">int</span>        <span class="comment">/* 指向整型*/</span></span><br><span class="line"><span class="keyword">var</span> fp *<span class="keyword">float32</span>    <span class="comment">/* 指向浮点型 */</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+]]></content>
+      <categories>
+        <category>GO基础</category>
+      </categories>
+      <tags>
+        <tag>GO</tag>
+      </tags>
   </entry>
   <entry>
     <title>GO函数-day07</title>
