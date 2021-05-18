@@ -596,6 +596,24 @@
 <li>Using template method design pattern    模版方法的设计模式</li>
 <li>Using strategy design pattern     策略模式</li>
 </ul>
+<h3 id="4、IoC容器的职责"><a href="#4、IoC容器的职责" class="headerlink" title="4、IoC容器的职责"></a>4、IoC容器的职责</h3><h4 id="4-1、通用职责"><a href="#4-1、通用职责" class="headerlink" title="4.1、通用职责"></a>4.1、通用职责</h4><ul>
+<li>依赖处理<ul>
+<li>依赖查找</li>
+<li>依赖注入</li>
+</ul>
+</li>
+<li>生命周期管理<ul>
+<li>容器</li>
+<li>托管的资源（Java Beans或其他资源）</li>
+</ul>
+</li>
+<li>配置<ul>
+<li>容器</li>
+<li>外部化配置</li>
+<li>托管的资源（Java Beans或其他资源）</li>
+</ul>
+</li>
+</ul>
 ]]></content>
       <tags>
         <tag>Spring</tag>
