@@ -572,4 +572,80 @@
         <tag>极客时间《从0开始学微服务》</tag>
       </tags>
   </entry>
+  <entry>
+    <title>IoC主要实现策略</title>
+    <url>/2021/05/17/IoC%E4%B8%BB%E8%A6%81%E5%AE%9E%E7%8E%B0%E7%AD%96%E7%95%A5/</url>
+    <content><![CDATA[<h3 id="1、IoC发展简介"><a href="#1、IoC发展简介" class="headerlink" title="1、IoC发展简介"></a>1、IoC发展简介</h3><ul>
+<li>1983年，Richard E.Sweet在《The Mesa Programming Environment》中提出“Hollywood Principle”(好莱坞原则)</li>
+<li>1988年，Ralph E.Johnson &amp; Brain Foote 在《D饿死鬼i难过Reusable Classes》中提出”Inversion of control”(控制反转)<span id="more"></span></li>
+<li>1996年，Michael Mattsson 在《Object-Oriented Frameworks,A survey of methodological issues》中将“inversion of control”命名为“Hollywood principle”</li>
+<li>2004年，Martin Fowler 在《Inversion of Control Containers and the Dependency Injection pattern》中提出了自己对Ioc以及DI的理解</li>
+<li>2005年，Martin Fowler在《Inversion of Control》对Ioc做出进一步说明</li>
+</ul>
+<h3 id="2、IoC理解"><a href="#2、IoC理解" class="headerlink" title="2、IoC理解"></a>2、IoC理解</h3><p>IOC说起来，其实是一种编程思想或原则。相对于似统的编程方式（如从前文到后文这样串行顺序的方式），比如用传统方式，当我依赖一个对象，我要去创建它，对它进行属性配置，然后我才能使用这个对象。<br>但是对于IOC这种方式来说，它使对象或者组件的创建更为透明，不需要过多的关注细节（如创建对象、给对象设置属性，这些ioc容器都给我们设置好了），以达到解耦的目的。控制反转，简单来理解其实就是把获取依赖动象的方式，交给IOC容器来实现，由主动拉取，变为被动获取。</p>
+<h3 id="3、IoC主要实现策略"><a href="#3、IoC主要实现策略" class="headerlink" title="3、IoC主要实现策略"></a>3、IoC主要实现策略</h3><ul>
+<li>Using a service locator pattern 服务定位模式</li>
+<li>Using dependency injection   通过依赖注入<ul>
+<li>Constructor injection    构造器注入</li>
+<li>Parameter injection      参数注入</li>
+<li>Setter injection         Setter注入</li>
+<li>Interface injection      接口注入</li>
+</ul>
+</li>
+<li>Using a contextualized lookup    上下文依赖查询</li>
+<li>Using template method design pattern    模版方法的设计模式</li>
+<li>Using strategy design pattern     策略模式</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微服务入门-day02</title>
+    <url>/2021/04/06/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8-day02/</url>
+    <content><![CDATA[<h3 id="1、注册中心原理"><a href="#1、注册中心原理" class="headerlink" title="1、注册中心原理"></a>1、注册中心原理</h3><p>在微服务架构下，主要有三种角色：服务提供者（RPC Server）、服务消费者（RPC Client）和服务注册中心（Registry）</p>
+<span id="more"></span>
+<p><img src="http://free-cn-01.cdn.bilnn.com/ddfilesass/jfs/t1/176555/32/2310/69158/606c7333E623e5c59/c201b78bfaa949f3.jpg" alt="注册中心原理"></p>
+<ul>
+<li>RPC Server 提供服务，在启动时，根据服务发布文件 server.xml 中的配置的信息，向 Registry 注册自身服务，并向 Registry 定期发送心跳汇报存活状态。</li>
+<li>RPC Client 调用服务，在启动时，根据服务引用文件 client.xml 中配置的信息，向 Registry 订阅服务，把 Registry 返回的服务节点列表缓存在本地内存中，并与 RPC Sever 建立连接。</li>
+<li>当 RPC Server 节点发生变更时，Registry 会同步变更，RPC Client 感知后会刷新本地内存中缓存的服务节点列表。</li>
+<li>RPC Client 从本地缓存的服务节点列表中，基于负载均衡算法选择一台 RPC Sever 发起调用。</li>
+</ul>
+<h3 id="2、注册中心实现方式"><a href="#2、注册中心实现方式" class="headerlink" title="2、注册中心实现方式"></a>2、注册中心实现方式</h3><p>注册中心的实现主要涉及几个问题：注册中心需要提供哪些接口，该如何部署；如何存储服务信息；如何监控服务提供者节点的存活；如果服务提供者节点有变化如何通知服务消费者，以及如何控制注册中心的访问权限。</p>
+<h5 id="2-1、注册中心API"><a href="#2-1、注册中心API" class="headerlink" title="2.1、注册中心API"></a>2.1、注册中心API</h5><ul>
+<li>服务注册接口：服务提供者通过调用服务注册接口来完成服务注册。</li>
+<li>服务反注册接口：服务提供者通过调用服务反注册接口来完成服务注销。</li>
+<li>心跳汇报接口：服务提供者通过调用心跳汇报接口完成节点存活状态上报。</li>
+<li>服务订阅接口：服务消费者通过调用服务订阅接口完成服务订阅，获取可用的服务提供者节点列表。</li>
+<li>服务变更查询接口：服务消费者通过调用服务变更查询接口，获取最新的可用服务节点列表。</li>
+<li>服务查询接口：查询注册中心当前注册了哪些服务信息。</li>
+<li>服务修改接口：修改注册中心中某一服务的信息。</li>
+</ul>
+<h5 id="2-2、集群部署"><a href="#2-2、集群部署" class="headerlink" title="2.2、集群部署"></a>2.2、集群部署</h5><p>注册中心作为服务提供者和服务消费者之间沟通的桥梁，它的重要性不言而喻。所以注册中心一般都是采用集群部署来保证高可用性，并通过分布式一致性协议来确保集群中不同节点之间的数据保持一致。<br>ZooKeeper</p>
+<h3 id="3、如何实现远程RPC调用"><a href="#3、如何实现远程RPC调用" class="headerlink" title="3、如何实现远程RPC调用"></a>3、如何实现远程RPC调用</h3><p>完成RPC调用：</p>
+<ul>
+<li>1、客户端和服务端如何建立网络连接</li>
+<li>2、服务端如何处理请求</li>
+<li>3、数据传输采用什么协议</li>
+<li>4、数据该如何序列化和反序列化</li>
+</ul>
+<h5 id="3-1、客户端和服务端如何建立网络连接"><a href="#3-1、客户端和服务端如何建立网络连接" class="headerlink" title="3.1、客户端和服务端如何建立网络连接"></a>3.1、客户端和服务端如何建立网络连接</h5><ul>
+<li>1、HTTP通信</li>
+<li>2、Socket通信</li>
+</ul>
+<h5 id="3-2、服务端如何处理请求"><a href="#3-2、服务端如何处理请求" class="headerlink" title="3.2、服务端如何处理请求"></a>3.2、服务端如何处理请求</h5><ul>
+<li>1、同步阻塞方式（BIO），客户端每发一次请求，服务端就生成一个线程去处理。当客户端同时发起的请求很多时，服务端需要创建很多的线程去处理每一个请求，如果达到了系统最大的线程数瓶颈，新来的请求就没法处理了。</li>
+<li>2、同步非阻塞方式 (NIO)，客户端每发一次请求，服务端并不是每次都创建一个新线程来处理，而是通过 I/O 多路复用技术进行处理。就是把多个 I/O 的阻塞复用到同一个 select 的阻塞上，从而使系统在单线程的情况下可以同时处理多个客户端请求。这种方式的优势是开销小，不用为每个请求创建一个线程，可以节省系统开销。</li>
+<li>3、异步非阻塞方式（AIO），客户端只需要发起一个 I/O 操作然后立即返回，等 I/O 操作真正完成以后，客户端会得到 I/O 操作完成的通知，此时客户端只需要对数据进行处理就好了，不需要进行实际的 I/O 读写操作，因为真正的 I/O 读取或者写入操作已经由内核完成了。这种方式的优势是客户端无需等待，不存在阻塞等待问题。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>极客时间《从0开始学微服务》</tag>
+      </tags>
+  </entry>
 </search>
